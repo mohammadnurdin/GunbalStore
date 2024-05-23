@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Detail Pengajuan')
+@section('title', 'Detail Pengajuans')
 
 @section('contents')
     <div class="mt-12">
@@ -44,29 +44,93 @@
                 </div>
                 <div class="card-body">
                     <form action="{{ route('detailpengajuan.store') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="id_pengajuan" value="{{ $pengajuan->id }}">
-                        <div class="form-group">
-                            <label for="id_barang">Nama Barang</label>
-                            <select name="id_barang" id="id_barang" class="form-control" required autofocus>
-                                @forelse ($barang as $brg)
-                                    <option value="{{ $brg->id }}">{{ $brg->nama_barang }}</option>
-                                @empty
-                                    <option value="0">Tidak Ada</option>
-                                @endforelse
-                            </select>
+                        @csrf <!-- CSRF Protection -->
+                        <div class="form-row">
+                            <input type="hidden" id="id_pengajuan" name="id_pengajuan" value="{{ $pengajuan->id }}">
+                            {{-- <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="id_barang">Nama Barang</label>
+                                        <div class="input-group mb-3">
+                                            <input type="number" name="id_barang" class="form-control" required>
+                                        </div>
+                                    </div>
+                                </div> --}}
+
+                            {{-- <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Pelanggan</label>
+                                    <select name="id_customer" class="js-example-basic-single form-control">
+                                        @foreach ($pelanggan as $pelang)
+                                            <option value="{{ $pelang->id_customer }}">{{ $pelang->nama_customer }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div> --}}
+
+
+                            {{-- <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="qty">Quantity</label>
+                                        <div class="input-group mb-3">
+                                            <input type="number" name="qty" class="form-control" required>
+                                        </div>
+                                    </div>
+                                </div> --}}
+                            <div class="col-md-2">
+                                <div class="d-flex">
+                                    <button type="button" style="margin-top: 35px;" onclick="tambahForm()"
+                                        class="btn btn-primary btn-sm mr-2 btn-block">(+)</button>
+                                    <button type="button" style="margin-top: 35px;" onclick="hapusForm()"
+                                        class="btn btn-danger btn-sm btn-block">(-)</button>
+                                </div>
+                            </div>
+
                         </div>
-                        <div class="form-group">
-                            <label for="qty">Quantity</label>
-                            <input type="number" name="qty" class="form-control" required>
+                        <div class="form-row mt-3">
+                            <div class="col-md-12">
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <select name="id_barang[]" id="id_barang[]" class="form-control"
+                                                placeholder="Masukan Barang disini..." required autofocus>
+                                                @forelse ($barang as $brg)
+                                                    <option value="{{ $brg->id }}">{{ $brg->nama_barang }}</option>
+                                                @empty
+                                                    <option value="0">Tidak Ada</option>
+                                                @endforelse
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <input type="number" class="form-control" name="qty[]"
+                                                placeholder="Tulis jumlah disini...">
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <!-- Content ID Barang -->
                         </div>
-                        <button type="submit" class="btn btn-primary btn-sm">
-                            <i class="fas fa-plus"></i> Submit
-                        </button>
+                        <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i>Submit</button>
                     </form>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Content Row -->
+
+        <div class="row">
+
+            <!-- Area Chart -->
+            <div class="col-xl-12 col-12">
+                <!-- DataTales Example -->
+                <div class="card shadow mb-4">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-bordered table-sm" id="dataTable" width="100%" cellspacing="0">
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
                                         <th>No</th>
@@ -77,6 +141,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @php $no = 1; @endphp
                                     @foreach ($detail as $no => $dtl)
                                         <tr
                                             class="{{ $no % 2 === 0 ? 'bg-gray-50 dark:bg-gray-800' : 'bg-white dark:bg-gray-900' }} border-b dark:border-gray-700">
@@ -105,4 +170,54 @@
             </div>
         </div>
     </div>
+
+    <!-- /.container-fluid -->
+
+    <script>
+        function tambahForm() {
+            const element = `
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <select name="id_barang[]" id="id_barang[]" class="form-control" placeholder="Masukan Barang disini..."required autofocus>
+                                                    @forelse ($barang as $brg)
+                                                        <option value="{{ $brg->id }}">{{ $brg->nama_barang }}</option>
+                                                    @empty
+                                                        <option value="0">Tidak Ada</option>
+                                                    @endforelse
+                                                </select>                    </div>
+                </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                        <input type="number" class="form-control" name="qty[]" placeholder="Tulis jumlah disini...">
+                    </div>
+                </div>
+            </div>
+        </div>
+        `;
+            const form = document.createElement("div");
+            form.innerHTML = element;
+            document.getElementById('hasil').appendChild(form);
+        }
+
+        function hapusForm() {
+            const list = document.getElementById('hasil');
+            list.removeChild(list.lastElementChild);
+        }
+        document.addEventListener('keyup', (event) => {
+            if (event.code === 'F1') {
+                tambahForm();
+            } else if (event.code === 'F2') {
+                hapusForm();
+            } else if (event.code === 'Enter') {
+                document.getElementById("formPJ").submit();
+            }
+        }, false);
+        // document.addEventListener('keyup', (event) => {
+        //  var name = event.key;
+        //  var code = event.code;
+        //  // Alert the key name and key code on keydown
+        //  alert(`Key pressed ${name} \r\n Key code value: ${code}`);
+        // }, false);
+    </script>
 @endsection

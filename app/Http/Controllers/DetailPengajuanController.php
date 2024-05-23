@@ -33,20 +33,21 @@ class DetailPengajuanController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'id_pengajuan' => ['required', 'integer'],
-            'id_barang' => ['required', 'integer'],
-            'qty' => ['required','integer']
-        ]);
-
-        $data = [
-            'id_pengajuan' => $request->input('id_pengajuan'),
-            'id_barang' => $request->input('id_barang'),
-            'qty' => $request->input('qty'),
-
-        ];
-
-        Detailpengajuan::create($data);
+        // $request->validate([
+        //     'id_pengajuan' => ['required', 'integer'],
+        //     'id_barang' => ['required', 'integer'],
+        //     'qty' => ['required','integer']
+        // ]);
+        $jumlah = count($request->input('id_barang'));
+        $data = [];
+        for ($i = 0; $i < $jumlah; $i++) {
+            array_push($data, [
+                'id_pengajuan' => $request->input('id_pengajuan'),
+                'id_barang' => $request->input('id_barang')[$i],
+                'qty'  => $request->input('qty')[$i]
+            ]);
+        }
+        Detailpengajuan::insert($data);
 
         return back();
     }

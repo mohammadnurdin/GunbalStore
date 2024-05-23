@@ -22,7 +22,7 @@ class PengajuanController extends Controller
      */
     public function index()
     {
-        $pengajuan = Pengajuan::with(['user', 'pelanggan'])->get();
+        $pengajuan = Pengajuan::with(['user', 'pelanggan'])->where('id_pegawai', Auth::user()->id)->get();
         // dd($pengajuan);
         return view('pengajuan.index')->with([
             'pengajuans' => $pengajuan,
@@ -30,7 +30,7 @@ class PengajuanController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new resour ce.
      */
     public function create()
     {
